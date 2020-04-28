@@ -1,0 +1,38 @@
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'lab_3/**'
+
+name: Lab_3_WebApp
+env:
+  AZURE_WEBAPP_NAME: mydevopsbootcamp-ppejfvsuhhlcw.azurewebsites.net
+  AZURE_WEBAPP_PACKAGE_PATH: ./lab_3/app
+
+jobs:
+  deploy-to-azure:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Azure Login
+        uses: azure/login@v1
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Setup Node 12.14.0
+        uses: actions/setup-node@v1
+        with:
+          node-version: "12.4.0"
+
+      - name: npm install
+        run: |
+          cd ${AZURE_WEBAPP_PACKAGE_PATH}
+          npm install
+
+      - name: npm test
+        run: |
+          cd ${AZURE_WEBAPP_PACKAGE_PATH}
+          npm test
